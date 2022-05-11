@@ -3,6 +3,7 @@ namespace Lib9c.Tests.Action
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Bencodex.Types;
     using Libplanet;
     using Libplanet.Action;
     using Libplanet.Crypto;
@@ -160,6 +161,11 @@ namespace Lib9c.Tests.Action
                         avatarState.questList.Serialize());
             }
 
+            state = state.SetState(
+                _avatarAddress.Derive("world_ids"),
+                List.Empty.Add(worldId.Serialize())
+            );
+
             var stageSheet = _initialState.GetSheet<StageSheet>();
             var (expectedLevel, expectedExp) = (0, 0L);
             if (stageSheet.TryGetValue(stageId, out var stageRow))
@@ -253,9 +259,14 @@ namespace Lib9c.Tests.Action
                 stageId = stageId,
             };
 
+            var state = _initialState.SetState(
+                _avatarAddress.Derive("world_ids"),
+                List.Empty.Add(worldId.Serialize())
+            );
+
             Assert.Throws<SheetRowNotFoundException>(() => action.Execute(new ActionContext()
             {
-                PreviousStates = _initialState,
+                PreviousStates = state,
                 Signer = _agentAddress,
                 Random = new TestRandom(),
             }));
@@ -339,9 +350,12 @@ namespace Lib9c.Tests.Action
         }
 
         [Theory]
-        [InlineData(GameConfig.MimisbrunnrWorldId, true)]
-        [InlineData(GameConfig.MimisbrunnrWorldId, false)]
-        public void Execute_InvalidWorldException(int worldId, bool backward)
+        [InlineData(GameConfig.MimisbrunnrWorldId, true, 10000001, false)]
+        [InlineData(GameConfig.MimisbrunnrWorldId, false, 10000001, true)]
+        // Unlock CRYSTAL first.
+        [InlineData(2, false, 51, false)]
+        [InlineData(2, true, 51, false)]
+        public void Execute_InvalidWorldException(int worldId, bool backward, int stageId, bool unlockedIdsExist)
         {
             var gameConfigState = new GameConfigState(_sheets[nameof(GameConfigSheet)]);
             var avatarState = new AvatarState(
@@ -376,12 +390,20 @@ namespace Lib9c.Tests.Action
                         avatarState.questList.Serialize());
             }
 
+            if (unlockedIdsExist)
+            {
+                state = state.SetState(
+                    _avatarAddress.Derive("world_ids"),
+                    List.Empty.Add(worldId.Serialize())
+                );
+            }
+
             var action = new HackAndSlashSweep
             {
                 apStoneCount = 1,
                 avatarAddress = _avatarAddress,
                 worldId = worldId,
-                stageId = 10000001,
+                stageId = stageId,
             };
 
             Assert.Throws<InvalidWorldException>(() => action.Execute(new ActionContext()
