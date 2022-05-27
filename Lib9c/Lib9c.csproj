@@ -28,7 +28,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="System.Reactive" Version="4.3.2" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="Secp256k1.Net" Version="1.0.0-alpha" />
     <PackageReference Include="Secp256k1.Native" Version="0.1.24-alpha" />
     <PackageReference Include="CsvHelper" Version="15.0.5" />
