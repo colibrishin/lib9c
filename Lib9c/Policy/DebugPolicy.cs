@@ -38,6 +38,8 @@ namespace Nekoyume.BlockChain.Policy
             return null;
         }
 
+        public long GetMaxTransactionsBytes(long index) => long.MaxValue;
+
         public long GetNextBlockDifficulty(BlockChain<PolymorphicAction<ActionBase>> blockChain)
         {
             return blockChain.Count > 0 ? _blockDifficulty : 0;

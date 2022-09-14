@@ -31,7 +31,6 @@ namespace Nekoyume.BlockChain.Policy
                 blockInterval: blockInterval,
                 validateNextBlockTx: validateNextBlockTx,
                 validateNextBlock: validateNextBlock,
-                getMaxBlockBytes: getMaxBlockBytes,
                 getMinTransactionsPerBlock: getMinTransactionsPerBlock,
                 getMaxTransactionsPerBlock: getMaxTransactionsPerBlock,
                 getMaxTransactionsPerSignerPerBlock: getMaxTransactionsPerSignerPerBlock)
