@@ -51,7 +51,7 @@ namespace Nekoyume.BlockChain.Policy
 
         public int GetMaxTransactionsPerSignerPerBlock(long index) => int.MaxValue;
 
-        public IEnumerable<PublicKey> GetValidators()
+        public IEnumerable<PublicKey> GetValidators(long index)
         {
             throw new System.NotImplementedException();
         }
